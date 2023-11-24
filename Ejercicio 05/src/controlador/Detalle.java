@@ -23,6 +23,7 @@ import vista.principal;
  * @author Víctor
  */
 public class Detalle {
+
     private Connection conexion;
     private Statement statementDetalle;
     private Statement statementResumen;
@@ -30,15 +31,12 @@ public class Detalle {
 
     public Detalle() {
         try {
-            Class.forName("org.apache.derby.jdbc.ClientDriver");
-            String url = "jdbc:derby://localhost:1527/AlumnoCentro";
-            String usuario = "Admin1";
-            String contraseña = "Admin";
 
-            conexion = DriverManager.getConnection(url, usuario, contraseña);
+            conexion = Conexion.conectar();
+
             statementDetalle = conexion.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             // statementResumen = conexion.createStatement();
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -48,7 +46,6 @@ public class Detalle {
         return rs;
     }
 
-    
     public void avanzar() throws SQLException {
         rs.next();
     }
@@ -60,12 +57,12 @@ public class Detalle {
     public Alumno obtenerDatos() throws SQLException {
         int obtenerCodigo = rs.getInt(1);
         String nombre = rs.getString(2);
-        Date Fecha=rs.getDate(3);
+        Date Fecha = rs.getDate(3);
         Double notaMedia = rs.getDouble(4);
         int obtenerCodCentro = rs.getInt(5);
         GregorianCalendar date = new GregorianCalendar();
         date.setTime(Fecha);
-        Alumno a = new Alumno(obtenerCodigo,nombre,date,notaMedia);
+        Alumno a = new Alumno(obtenerCodigo, nombre, date, notaMedia);
         return a;
         // Puedes hacer algo con los datos obtenidos
     }
@@ -78,18 +75,18 @@ public class Detalle {
         rs.last();
     }
 
-    public boolean esUltimo() throws SQLException{
+    public boolean esUltimo() throws SQLException {
         return rs.isLast();
     }
-    public boolean esPrimero() throws SQLException{
+
+    public boolean esPrimero() throws SQLException {
         return rs.isFirst();
     }
-    
-    
+
     public void guardarRegistro(String nuevoNombre, Date nuevaFechaNacimiento, double nuevaMedia, int codCentro) throws SQLException {
         rs.updateString(2, nuevoNombre);
         //new java.sql.Date = nuevaFechaNacimiento;
-        rs.updateDate(3, new java.sql.Date (nuevaFechaNacimiento.getTime()));
+        rs.updateDate(3, new java.sql.Date(nuevaFechaNacimiento.getTime()));
         rs.updateDouble(4, nuevaMedia);
         //rs.updateInt(5, codCentro);
         rs.updateRow();
